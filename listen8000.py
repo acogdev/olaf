@@ -26,10 +26,10 @@ def catch_all(path):
     token_url = 'http://127.0.0.1:5000/oauth/token'
 
     with open('r_local_provider_dat.py', 'a') as f:
-        f.write('\n')
         f.write('authorization_response = "' + authorization_response + '"')
         f.write('\n')
         f.write('state = "' + state + '"')
+        f.write('\n')
 
     SESSION = OAuth2Session(r_local_provider_dat.client_id,
                             redirect_uri=getRedirectURI(),

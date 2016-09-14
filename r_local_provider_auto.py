@@ -22,6 +22,8 @@ if r.status_code == 200:
             f.write('\n')
             f.write('client_secret = "' + client_secret + '"')
             f.write('\n')
+            f.write('session_cookie = "' + r1.cookies['session'] + '"')
+            f.write('\n')
 
 authorization_base_url = 'http://127.0.0.1:5000/oauth/authorize'
 token_url = 'http://127.0.0.1:5000/oauth/token'
