@@ -3,8 +3,6 @@ import requests
 from requests_oauthlib import OAuth2Session
 import olaf_lib
 
-os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
-
 
 r = requests.post('http://127.0.0.1:5000',
                   data={'username': 'jake'})

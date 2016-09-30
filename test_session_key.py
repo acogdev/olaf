@@ -1,25 +1,22 @@
-import os
-import requests
+import importlib
+import r_local_provider_dat
 from requests_oauthlib import OAuth2Session
 import olaf_lib
-import r_local_provider_dat
-
-os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+import ast
 
 
-client_id = r_local_provider_dat.client_id
-client_secret = r_local_provider_dat.client_secret
+importlib.reload(r_local_provider_dat)
 
-authorization_base_url = 'http://127.0.0.1:5000/oauth/authorize'
-token_url = 'http://127.0.0.1:5000/oauth/token'
+token = ast.literal_eval(r_local_provider_dat.token)
 
-SESSION = OAuth2Session(client_id,
+SESSION = OAuth2Session(r_local_provider_dat.client_id,
                         redirect_uri=olaf_lib.getRedirectURI(),
-                        scope='email')
+                        scope='email',
+                        state=r_local_provider_dat.state,
+                        token=token)
 
-# Redirect user to GitHub for authorization
-authorization_url, state = SESSION.authorization_url(authorization_base_url)
+# Fetch a protected resource, i.e. user profile
+r = SESSION.get('http://localhost:5000/api/data',
+                cookies=dict(session=r_local_provider_dat.session_cookie))
 
-r = requests.post(authorization_url,
-                  data={'confirm': 'yes'},
-                  cookies=dict(session=r_local_provider_dat.session_cookie))
+print(r.content)

@@ -1,16 +1,12 @@
-import os
 import importlib
 import r_local_provider_dat
 from requests_oauthlib import OAuth2Session
 from flask import Flask
 from flask import request
+import olaf_lib
+
+
 app = Flask(__name__)
-
-os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
-
-
-def getRedirectURI():
-    return 'http://localhost:8000/authorized'
 
 
 @app.route('/', defaults={'path': ''})
@@ -32,7 +28,7 @@ def catch_all(path):
         f.write('\n')
 
     SESSION = OAuth2Session(r_local_provider_dat.client_id,
-                            redirect_uri=getRedirectURI(),
+                            redirect_uri=olaf_lib.getRedirectURI(),
                             scope='email',
                             state=state)
 
@@ -40,6 +36,10 @@ def catch_all(path):
     token = SESSION.fetch_token(token_url,
                                 client_secret=r_local_provider_dat.client_secret,
                                 authorization_response=authorization_response)
+
+    with open('r_local_provider_dat.py', 'a') as f:
+        f.write('token = "' + str(token) + '"')
+        f.write('\n')
 
     # Fetch a protected resource, i.e. user profile
     r = SESSION.get('http://localhost:5000/api/me',
