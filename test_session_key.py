@@ -43,6 +43,9 @@ def test_refresh(token):
 
     refresh_url = olaf_lib.token_url
     TOKEN = SESSION.refresh_token(refresh_url, **extra)
+    with open('r_local_provider_dat.py', 'a') as f:
+        f.write('token = "' + str(TOKEN) + '"')
+        f.write('\n')
 
 
 def run_provider():
