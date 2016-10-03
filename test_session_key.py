@@ -12,6 +12,8 @@ TOKEN = ''
 def load_token():
     global TOKEN
 
+    importlib.reload(r_local_provider_dat)
+
     try:
         TOKEN = ast.literal_eval(r_local_provider_dat.token)
     except Exception as e:
@@ -30,7 +32,7 @@ def test_get_data(token):
                     cookies=dict(session=r_local_provider_dat.session_cookie))
 
 
-def test_refresh(token):
+def run_refresh(token):
     global TOKEN
 
     extra = {
@@ -60,17 +62,25 @@ def wait(t):
 
 
 def runtest():
-    load_token()
     run_provider()
     wait(2)
+    load_token()
     test_get_data(TOKEN)
 
     wait(11)
 
-    test_refresh(TOKEN)
+    run_refresh(TOKEN)
+    wait(1)
+    test_get_data(TOKEN)
+
+
+def test_refresh():
+    load_token()
+
+    run_refresh(TOKEN)
     wait(1)
     test_get_data(TOKEN)
 
 
 if __name__ == '__main__':
-    runtest()
+    test_refresh()
