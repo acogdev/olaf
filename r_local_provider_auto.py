@@ -24,7 +24,7 @@ if r.status_code == 200:
             f.write('\n')
 
 authorization_base_url = 'http://127.0.0.1:5000/oauth/authorize'
-token_url = 'http://127.0.0.1:5000/oauth/token'
+
 
 SESSION = OAuth2Session(client_id,
                         redirect_uri=olaf_lib.getRedirectURI(),

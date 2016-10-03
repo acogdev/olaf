@@ -3,20 +3,71 @@ import r_local_provider_dat
 from requests_oauthlib import OAuth2Session
 import olaf_lib
 import ast
+import time
 
 
-importlib.reload(r_local_provider_dat)
+TOKEN = ''
 
-token = ast.literal_eval(r_local_provider_dat.token)
 
-SESSION = OAuth2Session(r_local_provider_dat.client_id,
-                        redirect_uri=olaf_lib.getRedirectURI(),
-                        scope='email',
-                        state=r_local_provider_dat.state,
-                        token=token)
+def load_token():
+    global TOKEN
 
-# Fetch a protected resource, i.e. user profile
-r = SESSION.get('http://localhost:5000/api/data',
-                cookies=dict(session=r_local_provider_dat.session_cookie))
+    try:
+        TOKEN = ast.literal_eval(r_local_provider_dat.token)
+    except Exception as e:
+        print(e)
 
-print(r.content)
+
+def test_get_data(token):
+    SESSION = OAuth2Session(r_local_provider_dat.client_id,
+                            redirect_uri=olaf_lib.getRedirectURI(),
+                            scope='email',
+                            state=r_local_provider_dat.state,
+                            token=token)
+
+    # Fetch a protected resource, i.e. user profile
+    r = SESSION.get('http://localhost:5000/api/data',
+                    cookies=dict(session=r_local_provider_dat.session_cookie))
+
+
+def test_refresh(token):
+    global TOKEN
+
+    extra = {
+        'client_id': r_local_provider_dat.client_id,
+        'client_secret': r_local_provider_dat.client_secret,
+    }
+
+    SESSION = OAuth2Session(r_local_provider_dat.client_id,
+                            token=token)
+
+    refresh_url = olaf_lib.token_url
+    TOKEN = SESSION.refresh_token(refresh_url, **extra)
+
+
+def run_provider():
+    import r_local_provider_auto
+
+
+def wait(t):
+    for i in range(1, t):
+        print('.', end="", flush=True)
+        time.sleep(1)
+    print('.')
+
+
+def runtest():
+    load_token()
+    run_provider()
+    wait(2)
+    test_get_data(TOKEN)
+
+    wait(11)
+
+    test_refresh(TOKEN)
+    wait(1)
+    test_get_data(TOKEN)
+
+
+if __name__ == '__main__':
+    runtest()
