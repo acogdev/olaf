@@ -3,8 +3,13 @@ import requests
 import olaf_lib
 
 
+r = requests.post('http://127.0.0.1:7000/token',
+                  data={'username': 'jake', 'password': 'jake'})
 
-r1 = requests.get('http://127.0.0.1:7000/protected/',
-                   headers = {'Authorization': 'JohnDoe:John'})
+token = r.text
 
-print(r1.text)
+
+r = requests.get('http://127.0.0.1:7000/protected/',
+                 headers={'Authorization': token})
+
+print(r.text)

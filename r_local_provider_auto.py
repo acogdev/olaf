@@ -23,16 +23,20 @@ if r.status_code == 200:
             f.write('session_cookie = "' + r1.cookies['session'] + '"')
             f.write('\n')
 
-authorization_base_url = 'http://127.0.0.1:5000/oauth/authorize'
+        authorization_base_url = 'http://127.0.0.1:5000/oauth/authorize'
 
 
-SESSION = OAuth2Session(client_id,
-                        redirect_uri=olaf_lib.getRedirectURI(),
-                        scope='email')
+        SESSION = OAuth2Session(client_id,
+                                redirect_uri=olaf_lib.getRedirectURI(),
+                                scope='email')
 
-# Redirect user to GitHub for authorization
-authorization_url, state = SESSION.authorization_url(authorization_base_url)
-# TODO use requests to automate the authorizing
-r = requests.post(authorization_url,
-                  data={'confirm': 'yes'},
-                  cookies=r1.cookies)
+        # Redirect user to GitHub for authorization
+        authorization_url, state = SESSION.authorization_url(authorization_base_url)
+        # TODO use requests to automate the authorizing
+        r = requests.post(authorization_url,
+                          data={'confirm': 'yes'},
+                          cookies=r1.cookies)
+    else:
+        print('/client ' + str(r1.status_code) + ' ' + r1.status)
+else:
+    print(r.status_code)
