@@ -8,8 +8,14 @@ r = requests.post('http://127.0.0.1:5000',
                   data={'username': 'jake'})
 
 if r.status_code == 200:
+    r = requests.post('http://127.0.0.1:5000/token',
+                      cookies=r.cookies,
+                      data={'username': 'jake', 'password': 'jake'})
+
     r1 = requests.get('http://127.0.0.1:5000/client',
-                      cookies=r.cookies)
+                      cookies=r.cookies,
+                      headers={'Authorization': r.text})
+
     if r1.status_code == 200:
         client_dat = r1.json()
         client_id = client_dat['client_id']
@@ -23,16 +29,20 @@ if r.status_code == 200:
             f.write('session_cookie = "' + r1.cookies['session'] + '"')
             f.write('\n')
 
-authorization_base_url = 'http://127.0.0.1:5000/oauth/authorize'
+        authorization_base_url = 'http://127.0.0.1:5000/oauth/authorize'
 
 
-SESSION = OAuth2Session(client_id,
-                        redirect_uri=olaf_lib.getRedirectURI(),
-                        scope='email')
+        SESSION = OAuth2Session(client_id,
+                                redirect_uri=olaf_lib.getRedirectURI(),
+                                scope='email')
 
-# Redirect user to GitHub for authorization
-authorization_url, state = SESSION.authorization_url(authorization_base_url)
-# TODO use requests to automate the authorizing
-r = requests.post(authorization_url,
-                  data={'confirm': 'yes'},
-                  cookies=r1.cookies)
+        # Redirect user to GitHub for authorization
+        authorization_url, state = SESSION.authorization_url(authorization_base_url)
+        # TODO use requests to automate the authorizing
+        r = requests.post(authorization_url,
+                          data={'confirm': 'yes'},
+                          cookies=r1.cookies)
+    else:
+        print('/client ' + str(r1.status_code))
+else:
+    print(r.status_code)

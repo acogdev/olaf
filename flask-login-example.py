@@ -1,8 +1,10 @@
 # Author: Gouthaman Balaraman
-# http://gouthamanbalaraman.com/minimal-flask-login-example.html
+# http://gouthamanbalaraman.com/blog/minimal-flask-login-example.html
+# http://gouthamanbalaraman.com/blog/securing-authentication-tokens.html
 
-from flask import Flask, Response
+from flask import Flask, Response, request, render_template
 from flask.ext.login import LoginManager, UserMixin, login_required
+from itsdangerous import JSONWebSignatureSerializer
 
 
 app = Flask(__name__)
@@ -13,7 +15,8 @@ login_manager.init_app(app)
 class ProtectedUser(UserMixin):
     # proxy for a database of users
     user_database = {"JohnDoe": ("JohnDoe", "John"),
-                     "JaneDoe": ("JaneDoe", "Jane")}
+                     "JaneDoe": ("JaneDoe", "Jane"),
+                     'jake': ('jake', 'jake')}
 
     def __init__(self, username, password):
         self.id = username
@@ -31,7 +34,11 @@ def load_user(request):
         token = request.args.get('token')
 
     if token is not None:
-        username, password = token.split(":")  # naive token
+        jws = JSONWebSignatureSerializer(app.config["SECRET_KEY"])
+        cred = jws.loads(token)
+
+        username = cred['username']
+        password = cred['password']
         user_entry = ProtectedUser.get(username)
         if (user_entry is not None):
             user = ProtectedUser(user_entry[0], user_entry[1])
@@ -51,6 +58,18 @@ def protected():
     return Response(response="Hello Protected World!", status=200)
 
 
+@app.route('/token', methods=('GET', 'POST'))
+def token():
+    if request.method == 'GET':
+        return render_template('token.html')
+    else:
+        jws = JSONWebSignatureSerializer(app.config["SECRET_KEY"])
+        user = request.form.get('username')
+        password = request.form.get('password')
+        token = jws.dumps({'username': user, 'password': password})
+        return token
+
+
 if __name__ == '__main__':
-    app.config["SECRET_KEY"] = "0439068078768605274255422272211157357409409270"
+    app.config["SECRET_KEY"] = "4222722111573574"
     app.run(port=7000, debug=True)
