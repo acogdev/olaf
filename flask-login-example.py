@@ -71,5 +71,5 @@ def token():
 
 
 if __name__ == '__main__':
-    app.config["SECRET_KEY"] = "0439068078768605274255422272211157357409409270"
+    app.config["SECRET_KEY"] = "4222722111573574"
     app.run(port=7000, debug=True)

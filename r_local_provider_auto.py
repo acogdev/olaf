@@ -8,8 +8,14 @@ r = requests.post('http://127.0.0.1:5000',
                   data={'username': 'jake'})
 
 if r.status_code == 200:
+    r = requests.post('http://127.0.0.1:5000/token',
+                      cookies=r.cookies,
+                      data={'username': 'jake', 'password': 'jake'})
+
     r1 = requests.get('http://127.0.0.1:5000/client',
-                      cookies=r.cookies)
+                      cookies=r.cookies,
+                      headers={'Authorization': r.text})
+
     if r1.status_code == 200:
         client_dat = r1.json()
         client_id = client_dat['client_id']
@@ -37,6 +43,6 @@ if r.status_code == 200:
                           data={'confirm': 'yes'},
                           cookies=r1.cookies)
     else:
-        print('/client ' + str(r1.status_code) + ' ' + r1.status)
+        print('/client ' + str(r1.status_code))
 else:
     print(r.status_code)
