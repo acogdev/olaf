@@ -37,9 +37,7 @@ if r.status_code == 200:
                                 redirect_uri=olaf_lib.getRedirectURI(),
                                 scope='email')
 
-        # Redirect user to GitHub for authorization
         authorization_url, state = SESSION.authorization_url(authorization_base_url)
-        # TODO use requests to automate the authorizing
         r = requests.post(authorization_url,
                           data={'confirm': 'yes'},
                           cookies=r1.cookies)
