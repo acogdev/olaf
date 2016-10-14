@@ -4,17 +4,19 @@ from requests_oauthlib import OAuth2Session
 import olaf_lib
 
 
+r = requests.post('http://127.0.0.1:5000/token',
+                  data={'username': 'jake',
+                        'password': 'jake'})
+id_token = r.text
+
 r = requests.post('http://127.0.0.1:5000',
-                  data={'username': 'jake'})
+                  data={'username': 'jake'},
+                  headers={'Authorization': id_token})
 
 if r.status_code == 200:
-    r = requests.post('http://127.0.0.1:5000/token',
-                      cookies=r.cookies,
-                      data={'username': 'jake', 'password': 'jake'})
-
     r1 = requests.get('http://127.0.0.1:5000/client',
                       cookies=r.cookies,
-                      headers={'Authorization': r.text})
+                      headers={'Authorization': id_token})
 
     if r1.status_code == 200:
         client_dat = r1.json()
@@ -31,14 +33,11 @@ if r.status_code == 200:
 
         authorization_base_url = 'http://127.0.0.1:5000/oauth/authorize'
 
-
         SESSION = OAuth2Session(client_id,
                                 redirect_uri=olaf_lib.getRedirectURI(),
                                 scope='email')
 
-        # Redirect user to GitHub for authorization
         authorization_url, state = SESSION.authorization_url(authorization_base_url)
-        # TODO use requests to automate the authorizing
         r = requests.post(authorization_url,
                           data={'confirm': 'yes'},
                           cookies=r1.cookies)

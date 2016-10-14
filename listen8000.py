@@ -42,8 +42,14 @@ def catch_all(path):
         f.write('\n')
 
     # Fetch a protected resource, i.e. user profile
+    SESSION = OAuth2Session(token=token,
+                        # redirect_uri=olaf_lib.getRedirectURI(),
+                        # scope='email',
+                        # state=state
+                        )
     r = SESSION.get('http://localhost:5000/api/me',
-                    cookies=dict(session=r_local_provider_dat.session_cookie))
+                    cookies=dict(session=r_local_provider_dat.session_cookie)
+                    )
     print(r.content)
     return(r.content)
 
