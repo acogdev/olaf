@@ -1,12 +1,13 @@
+import olaf_lib
 import os
 import requests
+
 from requests_oauthlib import OAuth2Session
-import olaf_lib
 
 
 r = requests.post('http://127.0.0.1:5000/token',
                   data={'username': 'jake',
-                        'password': 'jake'})
+                        'password': 'pass'})
 id_token = r.text
 
 r = requests.post('http://127.0.0.1:5000',
