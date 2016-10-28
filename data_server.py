@@ -23,8 +23,12 @@ def index():
         r = SESSION.get('http://localhost:5000/api/me')
         if r.status_code == 200:
             return '\n data_server accessed with token\n'
-
-        return ''
+        elif r.status_code == 401:
+            import test_session_key
+            test_session_key.test_refresh()
+            app.index()
+        else:
+            return str(r.status_code) + ' ' + r.text
 
     except Exception as e:
         print(e)
