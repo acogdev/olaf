@@ -5,20 +5,6 @@ from requests_oauthlib import OAuth2Session
 import sys
 from bs4 import BeautifulSoup
 
-# r = requests.get('http://127.0.0.1:5000/login')
-
-# print(r.text)
-
-# r = requests.get('http://127.0.0.1:5000/login')
-
-# print(r.cookies)
-
-
-
-
-# page = BeautifulSoup(r.text, 'lxml')
-# txt = page.find_all('input', id='csrf_token')[0]
-# print(txt['value'])
 
 r = requests.post('http://127.0.0.1:5000/login',
                   data={'username': 'jake@acogdev.com',
@@ -26,18 +12,10 @@ r = requests.post('http://127.0.0.1:5000/login',
                         }
                   )
 
-# print(r.text)
-
-# id_token = r.text
-
-# r = requests.post('http://127.0.0.1:5000',
-#                   data={'username': 'jake'},
-#                   headers={'Authorization': id_token})
 
 if r.status_code == 200:
     r1 = requests.get('http://127.0.0.1:5000/client',
                       cookies=r.cookies,
-                      # headers={'Authorization': id_token}
                       )
 
     if r1.status_code == 200:
