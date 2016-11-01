@@ -12,8 +12,6 @@ app = Flask(__name__)
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def catch_all(path):
-    # Get the authorization verifier code from the callback url
-    # authorization_response = input('Paste the full redirect URL here:')
     importlib.reload(r_local_provider_dat)
 
     code = request.args['code']
@@ -43,10 +41,10 @@ def catch_all(path):
 
     # Fetch a protected resource, i.e. user profile
     SESSION = OAuth2Session(token=token,
-                        # redirect_uri=olaf_lib.getRedirectURI(),
-                        # scope='email',
-                        # state=state
-                        )
+                            # redirect_uri=olaf_lib.getRedirectURI(),
+                            # scope='email',
+                            # state=state
+                            )
     r = SESSION.get('http://localhost:5000/api/me',
                     cookies=dict(session=r_local_provider_dat.session_cookie)
                     )

@@ -61,9 +61,8 @@ if r.status_code == 200:
 
         authorization_url, state = SESSION.authorization_url(authorization_base_url)
         r = requests.post(authorization_url,
-                          data={'confirauthorization_urlm': 'yes'},
+                          data={'confirm': 'yes'},
                           cookies=r1.cookies)
-        print(r.text)
     else:
         print('/client ' + str(r1.status_code))
 else:
