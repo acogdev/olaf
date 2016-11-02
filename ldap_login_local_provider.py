@@ -1,25 +1,18 @@
 import olaf_lib
-import os
 import requests
-
 from requests_oauthlib import OAuth2Session
 
 
-r = requests.post('http://127.0.0.1:5000/token',
-                  data={'username': 'jake',
-                        'password': 'pass'})
-id_token = r.text
-
-r = requests.post('http://127.0.0.1:5000',
-                  data={'username': 'jake'},
-                  headers={'Authorization': id_token})
-
-
+r = requests.post('http://127.0.0.1:5000/login',
+                  data={'username': 'jake@acogdev.com',
+                        'password': 'eagle5253'
+                        }
+                  )
 
 if r.status_code == 200:
     r1 = requests.get('http://127.0.0.1:5000/client',
                       cookies=r.cookies,
-                      headers={'Authorization': id_token})
+                      )
 
     if r1.status_code == 200:
         client_dat = r1.json()
@@ -48,3 +41,4 @@ if r.status_code == 200:
         print('/client ' + str(r1.status_code))
 else:
     print(r.status_code)
+

@@ -26,7 +26,7 @@ def index():
         elif r.status_code == 401:
             import test_session_key
             test_session_key.test_refresh()
-            app.index()
+            return 'Had to refresh token. Try again.'
         else:
             return str(r.status_code) + ' ' + r.text
 
@@ -38,4 +38,4 @@ def index():
 
 if __name__ == '__main__':
     app.debug = True
-    app.run(host='localhost', port=8000)
+    app.run(host='localhost', port=8080)

@@ -1,9 +1,10 @@
 import importlib
+import olaf_lib
 import r_local_provider_dat
-from requests_oauthlib import OAuth2Session
+
 from flask import Flask
 from flask import request
-import olaf_lib
+from requests_oauthlib import OAuth2Session
 
 
 app = Flask(__name__)
@@ -12,8 +13,6 @@ app = Flask(__name__)
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def catch_all(path):
-    # Get the authorization verifier code from the callback url
-    # authorization_response = input('Paste the full redirect URL here:')
     importlib.reload(r_local_provider_dat)
 
     code = request.args['code']
@@ -41,12 +40,8 @@ def catch_all(path):
         f.write('token = "' + str(token) + '"')
         f.write('\n')
 
-    # Fetch a protected resource, i.e. user profile
-    SESSION = OAuth2Session(token=token,
-                        # redirect_uri=olaf_lib.getRedirectURI(),
-                        # scope='email',
-                        # state=state
-                        )
+    # Fetch a protected resource
+    SESSION = OAuth2Session(token=token)
     r = SESSION.get('http://localhost:5000/api/me',
                     cookies=dict(session=r_local_provider_dat.session_cookie)
                     )
