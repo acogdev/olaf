@@ -1,9 +1,6 @@
 import olaf_lib
-import os
 import requests
 from requests_oauthlib import OAuth2Session
-import sys
-from bs4 import BeautifulSoup
 
 
 r = requests.post('http://127.0.0.1:5000/login',
@@ -11,7 +8,6 @@ r = requests.post('http://127.0.0.1:5000/login',
                         'password': 'eagle5253'
                         }
                   )
-
 
 if r.status_code == 200:
     r1 = requests.get('http://127.0.0.1:5000/client',
